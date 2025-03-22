@@ -1,0 +1,292 @@
+.dashboard {
+  min-height: 100vh;
+  background: var(--dark-bg);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.dashboard-header {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.brand-name span {
+  color: var(--primary);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+}
+
+.user-details h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.user-details p {
+  font-size: 0.8rem;
+  margin: 0;
+  opacity: 0.7;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-top: 30px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+}
+
+.course-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.course-header {
+  text-align: center;
+}
+
+.course-card h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: var(--primary);
+}
+
+.course-card .course-id {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin: 5px 0 0;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--primary);
+}
+
+.course-card.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 30px rgba(51, 153, 255, 0.2);
+}
+
+.course-sections {
+  margin-top: 30px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.section h4 {
+  margin: 0 0 10px 0;
+  color: var(--primary);
+  font-size: 0.9rem;
+}
+
+.section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.section li {
+  font-size: 0.85rem;
+  padding: 8px;
+  margin-bottom: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.section li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.resource.video::before {
+  content: '📹';
+  margin-right: 5px;
+}
+
+.resource.document::before {
+  content: '📄';
+  margin-right: 5px;
+}
+
+.resource.interactive::before {
+  content: '🎮';
+  margin-right: 5px;
+}
+
+.quiz.available {
+  color: #4CAF50;
+}
+
+.not-scheduled {
+  color: #FFA726;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.dashboard-footer {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.messages-wrapper {
+  margin-bottom: 20px;
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  flex-shrink: 0;
+}
+
+.message-content {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 80%;
+}
+
+#tsparticles {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-button {
+  background: rgba(255, 59, 48, 0.1);
+  color: #FF3B30;
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.logout-button:hover {
+  background: rgba(255, 59, 48, 0.2);
+  border-color: rgba(255, 59, 48, 0.3);
+  transform: translateY(-2px);
+}
+
+.logout-button .logout-icon {
+  font-size: 1.2em;
+  transform: rotate(180deg);
+}
+
+.bot-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+  .courses-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+} 

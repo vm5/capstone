@@ -1,0 +1,53 @@
+/* src/components/TeacherDashboard/QuestionView.css */
+
+.question-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .question-text {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  
+  .options {
+    margin-bottom: 10px;
+  }
+  
+  .option {
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 3px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+  
+  .option.correct {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .approve-btn, .delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .approve-btn {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .delete-btn {
+    background-color: #dc3545;
+    color: #fff;
+  }
