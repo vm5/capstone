@@ -1,0 +1,121 @@
+.teacher-dashboard {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.teacher-dashboard h2 {
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.upload-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-input-container {
+  margin-bottom: 1.5rem;
+}
+
+.file-input-container input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.file-input-container input[type="file"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.file-types {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.selected-files {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.selected-files h3 {
+  color: #333;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.selected-files ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected-files li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.selected-files li:last-child {
+  border-bottom: none;
+}
+
+button {
+  width: 100%;
+  padding: 0.8rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+button.uploading {
+  background: #28a745;
+}
+
+.progress-bar {
+  margin-top: 1rem;
+  background: #e9ecef;
+  border-radius: 4px;
+  height: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: #28a745;
+  transition: width 0.3s ease;
+}
+
+.progress-bar span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+  font-size: 0.8rem;
+  font-weight: bold;
+} 

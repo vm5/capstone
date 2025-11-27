@@ -1,165 +1,93 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Particles from 'react-particles';
 import { loadSlim } from "tsparticles-slim";
-import { initiateGoogleAuth, handleGoogleCallback } from '../services/api';
+import { initiateGoogleAuth, handleGoogleCallback } from '../../services/api';
 import Splash from '../Splash/Splash';
 import './Header.css';
 
 function Header() {
   const navigate = useNavigate();
+  const [showSplash, setShowSplash] = useState(true);
   const [messages, setMessages] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
-  const [showSplash, setShowSplash] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const messagesRef = useRef(messages); // Ref to track current messages
 
-  // Update the ref whenever messages change
-  useEffect(() => {
-    messagesRef.current = messages;
-  }, [messages]);
-
+  // Initialize particles
   const particlesInit = async (engine) => {
     await loadSlim(engine);
   };
 
-  const handleGoogleSignIn = (role) => {
-    initiateGoogleAuth(role);
-  };
-
-  const handleAuthCallback = async (code) => {
-    try {
-      setIsLoading(true);
-      const response = await handleGoogleCallback(code);
-      console.log('Auth response:', response);
-
-      if (!response || !response.user) {
-        throw new Error('Invalid response from server');
-      }
-
-      // Store user data
-      localStorage.setItem('user', JSON.stringify(response.user));
-      localStorage.setItem('token', response.token);
-
-      // Force a hard redirect based on role
-      if (response.user.role === 'teacher') {
-        window.location.replace('/teacher-dashboard');
-      } else {
-        window.location.replace('/dashboard');
-      }
-
-    } catch (error) {
-      console.error('Auth error:', error);
-      addMessage({
-        content: error.message || "Authentication failed. Please try again.",
-        delay: 0
-      });
-      setTimeout(() => {
-        window.location.replace('/');
-      }, 3000);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const addMessage = (msg) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        ...msg,
-        content: (
-          <div className={`message-content ${isLoading ? 'loading' : ''}`}>
-            {msg.content}
-          </div>
-        ),
-      },
-    ]);
-  };
-
-  const handleRoleSelect = (role) => {
-    setSelectedRole(role);
-    // Clear existing messages
-    setMessages([]);
+  // Add this function at the beginning of the Header component
+  const checkAuthAndRedirect = () => {
+    const userData = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
     
-    // Add initial message
-    addMessage({
-      content: `Great choice! Opening up ${role} registration...`,
-      delay: 0
-    });
-
-    // After a short delay, refresh and store role
-    setTimeout(() => {
-      localStorage.setItem('selectedRole', role);
-      window.location.reload();
-    }, 1500);
+    if (userData && token) {
+      try {
+        const user = JSON.parse(userData);
+        if (user.role === 'teacher') {
+          navigate('/teacher-dashboard', { replace: true });
+          return true;
+        } else if (user.role === 'student') {
+          navigate('/dashboard', { replace: true });
+          return true;
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.clear();
+      }
+    }
+    return false;
   };
 
+  // Handle auth flow
   useEffect(() => {
-    // Check if this is a post-refresh load with a stored role
-    const storedRole = localStorage.getItem('selectedRole');
-    if (storedRole) {
-      // Clear the stored role immediately
-      localStorage.removeItem('selectedRole');
-      
-      // Show post-refresh messages
-      const newMessages = [
-        {
-          content: storedRole === 'student'
-            ? 'Please sign in with your PES University email address to continue.'
-            : 'Please sign in with your institutional or personal email address to continue.',
-          delay: 1000
-        },
-        {
-          content: (
-            <div className="auth-section">
-              <button
-                className="google-auth-button"
-                onClick={() => handleGoogleSignIn(storedRole)}
-              >
-                <img src="https://www.google.com/favicon.ico" alt="Google" />
-                Sign in with Google
-              </button>
-              <p className="email-note">
-                {storedRole === 'student'
-                  ? '*Only @pes.edu email addresses are accepted'
-                  : '*Institutional or personal email addresses are accepted'}
-              </p>
-            </div>
-          ),
-          delay: 2000
-        }
-      ];
-
-      newMessages.forEach((msg, index) => {
-        setTimeout(() => {
-          addMessage(msg);
-        }, msg.delay);
-      });
-      
-      return; // Skip initial messages if we're showing post-refresh messages
+    // Check if we're on the callback route
+    if (window.location.pathname === '/auth/callback') {
+      handleAuthCallback();
+      return;
     }
 
-    // Only show initial messages if we're on the home route and no stored role
+    // Check for existing auth on home page
     if (window.location.pathname === '/') {
-      const initialMessages = [
-        {
-          content: 'Hey there! 👋 Welcome to PESUprep!',
-          delay: 1000,
-        },
-        {
-          content: "I'm your personal AI assistant, here to help you excel in your academic journey.",
-          delay: 2000,
-        },
-        {
-          content: "Let's get started by choosing your role:",
-          delay: 3000,
-        },
-        {
+      const isAuthenticated = checkAuthAndRedirect();
+      if (isAuthenticated) {
+        return;
+      }
+
+      // If no auth, show welcome sequence
+      setMessages([]);
+      
+      const timer1 = setTimeout(() => {
+        setMessages([{
+          id: 'welcome-1',
+          content: 'Hey there! 👋 Welcome to PESUprep!'
+        }]);
+      }, 1000);
+
+      const timer2 = setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: 'welcome-2',
+          content: "I'm your personal AI assistant, here to help you excel in your academic journey."
+        }]);
+      }, 2000);
+
+      const timer3 = setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: 'welcome-3',
+          content: "Let's get started by choosing your role:"
+        }]);
+      }, 3000);
+
+      const timer4 = setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: 'role-selection',
           content: (
             <div className="role-selection-container">
               <div className="role-cards">
                 <button
-                  className={`role-card ${selectedRole === 'student' ? 'selected' : ''}`}
+                  className="role-card"
                   onClick={() => handleRoleSelect('student')}
                 >
                   <div className="role-icon">👨‍🎓</div>
@@ -167,7 +95,7 @@ function Header() {
                   <p>Access study materials, practice tests, and personalized learning paths</p>
                 </button>
                 <button
-                  className={`role-card ${selectedRole === 'teacher' ? 'selected' : ''}`}
+                  className="role-card"
                   onClick={() => handleRoleSelect('teacher')}
                 >
                   <div className="role-icon">👨‍🏫</div>
@@ -176,82 +104,192 @@ function Header() {
                 </button>
               </div>
             </div>
-          ),
-          delay: 4000,
-        },
-      ];
+          )
+        }]);
+      }, 4000);
 
-      initialMessages.forEach((msg, index) => {
-        setTimeout(() => {
-          addMessage(msg);
-        }, msg.delay);
-      });
-    }
+      // Hide splash screen after a delay
+      const splashTimer = setTimeout(() => setShowSplash(false), 2000);
 
-    // Check if we're on the callback route
-    if (window.location.pathname === '/auth/callback') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      console.log('Found auth code:', code);
-
-      if (code) {
-        handleAuthCallback(code);
-      }
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+        clearTimeout(timer4);
+        clearTimeout(splashTimer);
+      };
     }
   }, [navigate]);
+
+  const handleRoleSelect = (role) => {
+    if (isLoading) return;
+    
+    setSelectedRole(role);
+    setMessages([
+      {
+        id: 'role-confirm',
+        content: `Great choice! You've selected ${role} access.`
+      },
+      {
+        id: 'email-info',
+        content: role === 'student' ? (
+          <div className="email-info">
+            <p><strong>Important:</strong> Students must use their PES University email address:</p>
+            <ul>
+              <li>@pes.edu</li>
+              <li>@pesu.pes.edu</li>
+            </ul>
+          </div>
+        ) : (
+          <div className="email-info">
+            <p><strong>Note:</strong> Teachers can use:</p>
+            <ul>
+              <li>PES University email (@pes.edu, @pesu.pes.edu)</li>
+              <li>Personal email (Gmail, Yahoo, etc.)</li>
+            </ul>
+          </div>
+        )
+      },
+      {
+        id: 'signin-prompt',
+        content: (
+          <div className="auth-section">
+            <button
+              className="google-auth-button"
+              onClick={() => handleGoogleSignIn(role)}
+              disabled={isLoading}
+            >
+              <img src="https://www.google.com/favicon.ico" alt="Google" className="google-icon" />
+              Sign in with Google
+            </button>
+          </div>
+        )
+      }
+    ]);
+  };
+
+  const handleGoogleSignIn = async (role) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      await initiateGoogleAuth(role);
+    } catch (error) {
+      console.error('Auth error:', error);
+      setIsLoading(false);
+      setMessages([{
+        id: 'auth-error',
+        content: 'Failed to initialize authentication. Please try again.'
+      }]);
+    }
+  };
+
+  const handleAuthCallback = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+      
+      if (error) {
+        throw new Error(decodeURIComponent(error));
+      }
+      
+      const response = await handleGoogleCallback();
+      if (!response?.user || !response?.token) {
+        throw new Error('Invalid authentication response');
+      }
+
+      // Store auth data
+      localStorage.setItem('user', JSON.stringify(response.user));
+      localStorage.setItem('token', response.token);
+
+      // Show success message
+      setMessages([{
+        id: 'auth-success',
+        content: 'Authentication successful! Redirecting to dashboard...'
+      }]);
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        if (response.user.role === 'teacher') {
+          navigate('/teacher-dashboard', { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
+      }, 1500);
+
+    } catch (error) {
+      console.error('Auth error:', error);
+      localStorage.clear();
+      
+      // Show specific error message
+      setMessages([{
+        id: 'auth-error',
+        content: `Authentication failed: ${error.message}`
+      }]);
+      
+      // Add a retry button after error
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: 'retry-auth',
+          content: (
+            <div className="auth-retry">
+              <p>Please try again with the correct account.</p>
+              <button
+                className="retry-button"
+                onClick={() => navigate('/', { replace: true })}
+              >
+                Return to Login
+              </button>
+            </div>
+          )
+        }]);
+      }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
       {showSplash && <Splash />}
+      
       <Particles
         id="tsparticles"
         init={particlesInit}
         options={{
-          background: {
-            color: {
-              value: '#030711',
-            },
-          },
+          background: { color: { value: "#030711" } },
           fpsLimit: 120,
           particles: {
-            color: {
-              value: '#ffffff',
-            },
-            links: {
-              enable: false,
-            },
+            color: { value: "#ffffff" },
+            links: { enable: false },
             move: {
               enable: true,
-              direction: 'none',
-              outModes: {
-                default: 'out',
-              },
+              direction: "none",
+              outModes: { default: "out" },
               random: true,
               speed: 0.3,
-              straight: false,
+              straight: false
             },
             number: {
-              density: {
-                enable: true,
-                area: 800,
-              },
-              value: 100,
+              density: { enable: true, area: 800 },
+              value: 100
             },
             opacity: {
               value: 0.5,
               animation: {
                 enable: true,
                 speed: 0.5,
-                minimumValue: 0.1,
-              },
+                minimumValue: 0.1
+              }
             },
-            size: {
-              value: { min: 1, max: 3 },
-            },
+            size: { value: { min: 1, max: 3 } }
           },
-          detectRetina: true,
+          detectRetina: true
         }}
       />
+
       <header className="app-header">
         <div className="logo-section">
           <img src="/pesu.png" alt="PESU" className="logo" />
@@ -266,8 +304,8 @@ function Header() {
 
       <div className="chat-container">
         <div className="messages-wrapper">
-          {messages.map((msg, index) => (
-            <div key={index} className="message">
+          {messages.map((msg) => (
+            <div key={msg.id} className="message">
               <div className="avatar">
                 <img src="/bot.png" alt="AI Assistant" className="bot-avatar" />
               </div>
@@ -287,15 +325,6 @@ function Header() {
           )}
         </div>
       </div>
-      <footer className="app-footer">
-        <div className="footer-content">
-          <div className="footer-brand">
-            PESU<span>Prep</span>
-          </div>
-          <div className="footer-location">Bengaluru, India</div>
-          <div className="footer-year">© {new Date().getFullYear()}</div>
-        </div>
-      </footer>
     </>
   );
 }

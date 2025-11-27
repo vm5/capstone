@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './QuestionGenerator.css';
 
 const QuestionGenerator = () => {
     const [prompt, setPrompt] = useState('');
@@ -24,49 +25,82 @@ const QuestionGenerator = () => {
     };
 
     return (
-        <div className="question-generator">
-            <h2>AI Question Generator</h2>
-            <div className="prompt-section">
-                <textarea
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Describe the types of questions you want to generate..."
-                    rows={4}
-                    className="prompt-input"
-                />
-                <button 
-                    onClick={generateQuestions}
-                    disabled={loading}
-                    className="generate-btn"
-                >
-                    {loading ? 'Generating...' : 'Generate Questions'}
+        <div className="question-paper-section">
+            <div className="section-header">
+                <h2>Question Paper Generation</h2>
+                <button className="create-paper-btn">
+                    <i className="fas fa-plus"></i>
+                    Create New Paper
                 </button>
             </div>
-            {generatedQuestions.length > 0 && (
-                <div className="generated-questions">
-                    {generatedQuestions.map((question, i) => (
-                        <div key={i} className="question-card">
-                            <h3>Question {i + 1}</h3>
-                            <p>{question.text}</p>
-                            {question.type === 'mcq' && (
-                                <div className="options">
-                                    {question.options.map((option, j) => (
-                                        <div key={j} className={`option ${j === question.correct_answer ? 'correct' : ''}`}>
-                                            {option}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                            <div className="explanation">
-                                <strong>Explanation:</strong> {question.suggested_answer}
+
+            <div className="papers-grid">
+                {/* Example Paper Card */}
+                <div className="paper-card">
+                    <div className="paper-id">6807c2154c9d3ff128853629</div>
+                    <div className="paper-info">
+                        <h3>UE22CS352A</h3>
+                        <div className="paper-meta">
+                            <div className="meta-item">
+                                <i className="fas fa-clock"></i>
+                                Duration: 10 minutes
                             </div>
-                            <div className="metadata">
-                                <span>Difficulty: {question.difficulty}</span>
+                            <div className="meta-item">
+                                <i className="fas fa-star"></i>
+                                Total Marks: 10
+                            </div>
+                            <div className="meta-item">
+                                <i className="fas fa-database"></i>
+                                Source: database
                             </div>
                         </div>
-                    ))}
+                    </div>
+
+                    <div className="paper-actions">
+                        <button className="action-btn view-btn">
+                            <i className="fas fa-eye"></i>
+                            View
+                        </button>
+                        <button className="action-btn delete-btn">
+                            <i className="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+
+                    <div className="source-info">
+                        <span>Created: 7/2/2025</span>
+                        <span>Source: file</span>
+                    </div>
                 </div>
-            )}
+
+                {/* Example Paper Card with Download */}
+                <div className="paper-card">
+                    <div className="paper-id">6807c2154c9d3ff128853629</div>
+                    <div className="paper-info">
+                        <h3>UE22CS352A</h3>
+                        <div className="paper-meta">
+                            <div className="meta-item">
+                                <i className="fas fa-clock"></i>
+                                Duration: 10 minutes
+                            </div>
+                            <div className="meta-item">
+                                <i className="fas fa-star"></i>
+                                Total Marks: 10
+                            </div>
+                        </div>
+                    </div>
+
+                    <button className="download-btn">
+                        <i className="fas fa-download"></i>
+                        Download Paper
+                    </button>
+
+                    <div className="source-info">
+                        <span>Created: 7/2/2025</span>
+                        <span>Source: file</span>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

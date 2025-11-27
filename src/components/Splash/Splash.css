@@ -9,56 +9,118 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeOut 0.5s ease-out 1.5s forwards;
+  animation: fadeOut 0.5s ease-out 2.5s forwards;
+  overflow: hidden;
+}
+
+.splash-stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, var(--accent), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, var(--primary), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, var(--secondary), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, var(--accent), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 130px 80px, var(--primary), rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: twinkle 4s ease-in-out infinite;
+  opacity: 0.5;
 }
 
 .splash-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
+  padding: 40px;
+  min-width: 320px;
+  transform: translateY(30px);
+  animation: floatUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.splash-logo-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .splash-logo {
-  width: 120px;
+  width: 100%;
   height: auto;
-  animation: scalePulse 1.5s ease-in-out;
+  position: relative;
+  z-index: 2;
+  animation: scalePulse 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.splash-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  filter: blur(20px);
+  opacity: 0.3;
+  animation: glowPulse 2s ease-in-out infinite;
 }
 
 .splash-brand {
-  font-size: 3rem;
-  font-weight: 800;
-  background: linear-gradient(to right, #fff, #e0e0e0);
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .splash-brand span {
-  background: linear-gradient(to right, var(--accent), #ff6b9f);
+  background: linear-gradient(135deg, var(--accent), var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.loading-bar {
-  width: 200px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
+.splash-tagline {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  text-align: center;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease-out 0.5s forwards;
 }
 
-.loading-bar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
+.loading-container {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease-out 0.7s forwards;
+}
+
+.loading-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--glass-bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.loading-progress {
   height: 100%;
-  background: linear-gradient(to right, var(--primary), var(--accent));
-  animation: loading 1.5s ease-out;
+  background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+  animation: loading 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  background-size: 200% 100%;
+}
+
+.loading-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
 @keyframes fadeOut {
@@ -75,6 +137,38 @@
 }
 
 @keyframes loading {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(0); }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+}
+
+@keyframes twinkle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 } 
